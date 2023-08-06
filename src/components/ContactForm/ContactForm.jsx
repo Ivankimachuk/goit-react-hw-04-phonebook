@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Notiflix from 'notiflix';
 import { Button, Form, Label, Input } from 'components/Emotion.styled';
@@ -8,40 +8,38 @@ const DEFAULT__DATA = {
     number: ''
 }
 
-class ContactForm extends Component {
-    state = {
-        ...DEFAULT__DATA
-    };
+const ContactForm = ({ contacts, addContact }) => {
+    const [ formData, setFormData] = useState(DEFAULT__DATA);
 
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({ [name]: value });
+        setFormData(prevData => ({ ...prevData, [name]: value }));
     };
 
-    handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const { name, number } = this.state;
+        const { name, number } = formData;
         // ПОРІВНЯННЯ КОНТАКТУ НА ДУБЛЮВАННЯ
-        const comparisonOfContact = this.props.contacts.some(
-            (contact) => contact.name === name 
-        );
+        const comparisonOfContact = contacts.some( contact => contact.name === name );
         
-        comparisonOfContact 
-        ? Notiflix.Notify.info(`The contact number ${name} you are trying to record already exists!!!`)
-        : this.props.addContact( name,number );
-        // ОЧИЩЕННЯ ПОЛІВ
-        this.setState({...DEFAULT__DATA});
-    }
+        
+        if (comparisonOfContact) {
+           Notiflix.Notify.info(`The contact number ${name} you are trying to record already exists!!!`);
+        } else {
+            addContact(name, number);
+            setFormData(DEFAULT__DATA);
+        }
+    };
 
-    render() {
-        const { name, number } = this.state;
+    
+        const { name, number } = formData;
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={handleSubmit}>
             <Label>
                 Name:
                 <Input
                     value={name}
-                    onChange={this.handleChange}
+                    onChange={handleChange}
                     type="text"
                     name="name"
                     pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -54,7 +52,7 @@ class ContactForm extends Component {
                 Number:
                 <Input
                     value={number}
-                    onChange={this.handleChange}
+                    onChange={handleChange}
                     type="tel"
                     name="number"
                     pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
@@ -66,7 +64,7 @@ class ContactForm extends Component {
                 <Button type="submit">Add contact</Button>
             </Form>
         )
-    }
+    
 };
 
 export default ContactForm;
