@@ -5,6 +5,7 @@ import ContactList from './ContactList';
 import Filter from './Filter';
 import { Container } from 'components/Emotion.styled';
 
+document.title = 'HW4 Phonebook';
 const LS_KEY = 'contacts-data-user';
 
 const App  = () => {
