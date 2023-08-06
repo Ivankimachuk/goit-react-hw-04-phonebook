@@ -17,12 +17,13 @@ const App  = () => {
   }, [ contacts])
 
   const addContact = ( name, number ) => {
-    const newContact = {id: nanoid(), name, number };
-    setContacts([ ...contacts, newContact ]) 
+    const newContact = { id: nanoid(), name, number };
+    setContacts((prevContacts) => [ ...prevContacts, newContact ]); 
   };
 
   const deleteContact = (id) => {
-    setFilter(contacts.filter((contact) => contact.id !== id));
+    // setContacts(setContacts.filter((contact) => contact.id !== id));
+    setContacts((prevContacts) => prevContacts.filter((contact) => contact.id !== id));
   };
 
   const handleFilterChange = (e) => {
@@ -32,7 +33,7 @@ const App  = () => {
   
    
     const filteredContacts = contacts.filter((contact) =>
-      contact.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+      contact.name.toLowerCase().includes(filter.toLowerCase())
     );
 
     return (
@@ -48,4 +49,3 @@ const App  = () => {
 };
 
 export default App;
-
